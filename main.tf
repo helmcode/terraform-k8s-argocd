@@ -50,7 +50,13 @@ resource "helm_release" "argocd" {
             annotations      = var.ingress_annotations
             hosts            = var.ingress_hosts
             tls              = var.ingress_tls
-          } : { enabled = false }
+            } : {
+            enabled          = false
+            ingressClassName = ""
+            annotations      = {}
+            hosts            = []
+            tls              = []
+          }
         }
 
         controller = {
@@ -96,7 +102,7 @@ resource "helm_release" "argocd" {
   )
 
   dynamic "set" {
-    for_each = var.helm_sets
+    for_each = { for idx, item in var.helm_sets : idx => item }
     content {
       name  = set.value.name
       value = set.value.value
@@ -105,7 +111,7 @@ resource "helm_release" "argocd" {
   }
 
   dynamic "set_sensitive" {
-    for_each = var.helm_sets_sensitive
+    for_each = { for idx, item in var.helm_sets_sensitive : idx => item }
     content {
       name  = set_sensitive.value.name
       value = set_sensitive.value.value
