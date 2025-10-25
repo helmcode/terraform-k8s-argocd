@@ -99,7 +99,7 @@ variable "repository_credentials_enabled" {
 }
 
 variable "repository_url" {
-  description = "Repository URL (e.g., https://gitlab.helmcode.com)"
+  description = "Repository URL (e.g., https://gitlab.com)"
   type        = string
 }
 
