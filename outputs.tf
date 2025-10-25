@@ -32,3 +32,13 @@ output "server_url" {
   description = "ArgoCD server URL (domain-based)"
   value       = var.insecure_mode ? "http://${var.domain}" : "https://${var.domain}"
 }
+
+output "bootstrap_applicationset_enabled" {
+  description = "Whether bootstrap ApplicationSet is enabled"
+  value       = var.bootstrap_applicationset_enabled
+}
+
+output "bootstrap_repo_url" {
+  description = "Git repository URL for bootstrap ApplicationSet"
+  value       = var.bootstrap_applicationset_enabled ? var.bootstrap_repo_url : null
+}

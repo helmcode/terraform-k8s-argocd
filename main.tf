@@ -88,14 +88,26 @@ resource "helm_release" "argocd" {
           enabled = var.notifications_enabled
         }
 
-        configs = {
-          params = merge(
-            {
-              "server.insecure" = var.insecure_mode
-            },
-            var.config_params
-          )
-        }
+        configs = merge(
+          {
+            params = merge(
+              {
+                "server.insecure" = var.insecure_mode
+              },
+              var.config_params
+            )
+          },
+          var.repository_credentials_enabled && var.repository_url != "" && var.repository_password != "" ? {
+            credentialTemplates = {
+              "${var.repository_name}" = {
+                url      = var.repository_url
+                username = var.repository_username
+                password = var.repository_password
+                type     = var.repository_type
+              }
+            }
+          } : {}
+        )
       })
     ],
     var.extra_values

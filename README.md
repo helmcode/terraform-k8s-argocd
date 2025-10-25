@@ -12,6 +12,8 @@ Terraform module to deploy ArgoCD on any Kubernetes cluster.
 - Optional Dex (SSO) integration
 - Optional notifications controller
 - ApplicationSet controller support
+- **Private repository credentials** (GitLab, GitHub, Bitbucket, SSH)
+- Bootstrap ApplicationSet for automatic app discovery
 - Insecure mode for testing
 - Full values override support
 
@@ -72,6 +74,60 @@ module "argocd" {
   notifications_enabled = true
 }
 ```
+
+### With Private Repository Credentials
+
+```hcl
+module "argocd" {
+  source = "path/to/terraform-k8s-argocd"
+
+  namespace = "argocd"
+  domain    = "argocd.example.com"
+
+  # Enable repository credentials
+  repository_credentials_enabled = var.repository_credentials_enabled
+  repository_url                 = var.repository_url
+  repository_username            = var.repository_username
+  repository_password            = var.repository_password
+  repository_name                = var.repository_name
+}
+
+# Variables (configure in Scalr UI or pass via environment)
+variable "repository_credentials_enabled" {
+  type    = bool
+  default = true
+}
+
+variable "repository_url" {
+  description = "Repository URL (e.g., https://gitlab.helmcode.com)"
+  type        = string
+}
+
+variable "repository_username" {
+  type    = string
+  default = "gitlab-ci-token"
+}
+
+variable "repository_password" {
+  type      = string
+  sensitive = true
+}
+
+variable "repository_name" {
+  type    = string
+  default = "gitlab-my-org"
+}
+```
+
+**For Scalr:** Configure variables in Scalr UI (mark `repository_password` as sensitive)
+
+**For Local/CI:** Export as environment variables:
+```bash
+export TF_VAR_repository_password="glpat-YOUR-TOKEN-HERE"
+terraform apply
+```
+
+See [examples/private-repo-credentials](./examples/private-repo-credentials) for detailed documentation.
 
 ### With Custom Values
 
