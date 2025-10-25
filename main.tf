@@ -102,20 +102,20 @@ resource "helm_release" "argocd" {
   )
 
   dynamic "set" {
-    for_each = { for idx, item in var.helm_sets : idx => item }
+    for_each = var.helm_sets
     content {
       name  = set.value.name
       value = set.value.value
-      type  = lookup(set.value, "type", null)
+      type  = try(set.value.type, null)
     }
   }
 
   dynamic "set_sensitive" {
-    for_each = { for idx, item in var.helm_sets_sensitive : idx => item }
+    for_each = var.helm_sets_sensitive
     content {
       name  = set_sensitive.value.name
       value = set_sensitive.value.value
-      type  = lookup(set_sensitive.value, "type", null)
+      type  = try(set_sensitive.value.type, null)
     }
   }
 

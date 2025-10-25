@@ -297,8 +297,7 @@ variable "helm_sets_sensitive" {
     value = string
     type  = optional(string)
   }))
-  default   = []
-  sensitive = true
+  default = []
 }
 
 variable "timeout" {
