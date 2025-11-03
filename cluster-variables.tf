@@ -5,8 +5,6 @@ variable "additional_clusters" {
     token = string
     tls = object({
       ca = string
-      cert = string
-      key = string
     })
   }))
 

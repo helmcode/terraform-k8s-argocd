@@ -17,8 +17,6 @@ resource "kubernetes_manifest" "clusters" {
         bearerToken = each.value.token
         tlsClientConfig = {
           caData = each.value.tls.ca
-          certData = each.value.tls.cert
-          keyData = each.value.tls.key
         }
       }))
     }
