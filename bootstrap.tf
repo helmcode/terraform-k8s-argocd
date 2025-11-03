@@ -1,11 +1,12 @@
 resource "kubernetes_manifest" "bootstrap_applicationset" {
   count = var.bootstrap_applicationset_enabled ? 1 : 0
+  for_each = var.bootstrap_destination
 
   manifest = {
     apiVersion = "argoproj.io/v1alpha1"
     kind       = "ApplicationSet"
     metadata = {
-      name      = var.bootstrap_applicationset_name
+      name      = "${var.bootstrap_applicationset_name}-${each.key}"
       namespace = var.namespace
     }
     spec = {
@@ -13,10 +14,10 @@ resource "kubernetes_manifest" "bootstrap_applicationset" {
         {
           git = {
             repoURL  = var.bootstrap_repo_url
-            revision = var.bootstrap_repo_revision
+            revision = each.value.revision
             directories = [
               {
-                path = var.bootstrap_repo_path
+                path = each.value.path
               }
             ]
           }
@@ -27,9 +28,9 @@ resource "kubernetes_manifest" "bootstrap_applicationset" {
           name = "{{path.basenameNormalized}}"
         }
         spec = {
-          project = var.bootstrap_project
+          project = each.value.project
           destination = {
-            server    = var.bootstrap_destination_server
+            name      = each.value.server
             namespace = "{{path.basenameNormalized}}"
           }
           syncPolicy = merge(
@@ -52,7 +53,7 @@ resource "kubernetes_manifest" "bootstrap_applicationset" {
           sources = [
             {
               repoURL        = var.bootstrap_repo_url
-              targetRevision = var.bootstrap_repo_revision
+              targetRevision = each.value.revision
               path           = "{{path}}"
             }
           ]

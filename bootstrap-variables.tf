@@ -16,28 +16,22 @@ variable "bootstrap_repo_url" {
   default     = ""
 }
 
-variable "bootstrap_repo_revision" {
-  description = "Git revision for bootstrap ApplicationSet"
-  type        = string
-  default     = "HEAD"
-}
-
-variable "bootstrap_repo_path" {
-  description = "Path pattern in repository for app discovery (e.g., apps/*)"
-  type        = string
-  default     = "apps/*"
-}
-
-variable "bootstrap_destination_server" {
-  description = "Kubernetes API server URL for bootstrap apps"
-  type        = string
-  default     = "https://kubernetes.default.svc"
-}
-
-variable "bootstrap_project" {
-  description = "ArgoCD project for bootstrap apps"
-  type        = string
-  default     = "default"
+variable "bootstrap_destination" {
+  description = "Set of applicationSets for clusters management"
+  type = map(object({
+    path = string
+    revision = string
+    project = string
+    server = string
+  }))
+  default = {
+    "default" = {
+      path = "apps/*"
+      revision = "HEAD"
+      project = "default"
+      server = "in-cluster"
+    }
+  }
 }
 
 variable "bootstrap_sync_automated" {
