@@ -25,7 +25,10 @@ resource "kubernetes_manifest" "bootstrap_applicationset" {
       ]
       template = {
         metadata = {
-          name = "{{path.basenameNormalized}}"
+          name = "{{path.basenameNormalized}}-${each.key}"
+          labels = {
+            "appset.helmcode.com/source" = each.key
+          }
         }
         spec = {
           project = each.value.project
