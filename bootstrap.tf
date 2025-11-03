@@ -1,6 +1,5 @@
 resource "kubernetes_manifest" "bootstrap_applicationset" {
-  count = var.bootstrap_applicationset_enabled ? 1 : 0
-  for_each = var.bootstrap_destination
+  for_each = var.bootstrap_applicationset_enabled ? var.bootstrap_destination : {}
 
   manifest = {
     apiVersion = "argoproj.io/v1alpha1"
